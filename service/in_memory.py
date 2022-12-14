@@ -1,6 +1,12 @@
+import os.path
+import sys
+
+sys.path.append(os.path.dirname(__file__) + "/..")
+sys.path.append(os.path.dirname(__file__) + "/../service")
+
 import grpc
 
-from service import inventory_pb2
+import service.inventory_pb2 as inventory_pb2
 from service.error import GRPCError
 
 
