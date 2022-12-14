@@ -188,7 +188,9 @@ def validate_create_book_request(request):
 def fetch_connection_details():
     try:
         config = ConfigParser()
-        config.read("../resources/config.ini")
+        path = os.path.dirname(__file__) + "/../resources/config.ini"
+        print(path)
+        config.read(path)
         connection = config["SERVER"]
         print(connection)
         host = connection["host"]

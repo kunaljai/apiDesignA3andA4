@@ -15,7 +15,9 @@ import inventory_pb2_grpc
 def fetch_connection_details():
     try:
         config = ConfigParser()
-        config.read("../resources/config.ini")
+        path = os.path.dirname(__file__) + "/../resources/config.ini"
+        print(path)
+        config.read(path)
         connection = config["CLIENT"]
         print(connection)
         host = connection["host"]
