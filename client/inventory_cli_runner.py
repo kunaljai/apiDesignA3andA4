@@ -4,32 +4,18 @@ import sys
 sys.path.append(os.path.dirname(__file__) + "/..")
 sys.path.append(os.path.dirname(__file__) + "/../service")
 
-from configparser import ConfigParser
-
 import grpc
 
-import inventory_pb2
-import inventory_pb2_grpc
+from service import inventory_pb2
+from service import inventory_pb2_grpc
+from helper.configuration import Configuration
 
 
-def fetch_connection_details():
-    try:
-        config = ConfigParser()
-        path = os.path.dirname(__file__) + "/../resources/config.ini"
-        print(path)
-        config.read(path)
-        connection = config["CLIENT"]
-        print(connection)
-        host = connection["host"]
-        port = connection["port"]
-        return host + ":" + port
-    except Exception as e:
-        print(e)
-    return ""
+# Feel free to ignore this file. This is just to test the APIs using CLI.
 
 
 def run():
-    connection_string = fetch_connection_details()
+    connection_string = Configuration.fetch_connection_details("CLIENT")
     with grpc.insecure_channel(connection_string) as channel:
         stub = inventory_pb2_grpc.InventoryServiceStub(channel)
         print("Welcome to the library!")
