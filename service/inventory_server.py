@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(__file__) + "/..")
 sys.path.append(os.path.dirname(__file__) + "/../service")
 
 from concurrent import futures
-from configparser import ConfigParser
+from helper.configuration import Configuration
 
 import grpc
 
@@ -109,8 +109,8 @@ class InventoryServicer(inventory_pb2_grpc.InventoryServiceServicer):
 
 
 def serve():
-    connection_string, max_workers = fetch_connection_details()
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
+    connection_string = Configuration.fetch_connection_details("SERVER")
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     inventory_pb2_grpc.add_InventoryServiceServicer_to_server(InventoryServicer(), server)
     server.add_insecure_port(connection_string)
     server.start()
@@ -183,23 +183,6 @@ def validate_create_book_request(request):
         "Improper message",
         grpc.StatusCode.INVALID_ARGUMENT
     )
-
-
-def fetch_connection_details():
-    try:
-        config = ConfigParser()
-        path = os.path.dirname(__file__) + "/../resources/config.ini"
-        print(path)
-        config.read(path)
-        connection = config["SERVER"]
-        print(connection)
-        host = connection["host"]
-        port = connection["port"]
-        max_workers = int(connection["max_workers"])
-        return host + ":" + port, max_workers
-    except Exception as e:
-        print(e)
-    return "", 0
 
 
 if __name__ == '__main__':
